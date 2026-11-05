@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit Reminder – Custom Subject Prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#8A8A8A;font-family:Roboto,Arial,sans-serif;color:#212121;min-height:100vh;padding:20px;display:flex;flex-direction:column;justify-content:center}
+a{color:#1976D2}a:hover{color:#1147A1}
+[hidden]{display:none !important}
+.modal{width:100%;max-width:1400px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 11px 15px -7px rgba(0,0,0,.2),0 24px 38px 3px rgba(0,0,0,.14);display:flex;overflow:hidden}
+.form{width:600px;flex-shrink:0;padding:20px 28px 24px;border-right:1px solid #E0E0E0;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
+.f{display:flex;flex-direction:column;gap:2px;padding-bottom:6px;border-bottom:1px solid rgba(0,0,0,.42)}
+.f.ro{border-bottom-style:dotted;border-bottom-color:rgba(0,0,0,.38)}
+.lbl{font-size:11px;color:#666}
+.val{font-size:13px;line-height:20px}
+.ro .lbl,.ro .val{color:#757575}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.col{display:flex;flex-direction:column;gap:4px}
+.fld{font-family:inherit;font-size:13px;line-height:20px;color:#212121;border:0;border-bottom:1px solid rgba(0,0,0,.42);padding:0 0 6px;background:transparent;width:100%}
+textarea.fld{resize:vertical}
+.fld:focus{outline:none;border-bottom-color:#000;box-shadow:0 1px 0 #000}
+.fld.err{border-bottom-color:#C62828;box-shadow:0 1px 0 #C62828}
+.fld:disabled{color:#757575;border-bottom-style:dotted;border-bottom-color:rgba(0,0,0,.38);cursor:default}
+.hint{font-size:12px;line-height:18px;color:#666;padding-top:4px}
+.errmsg{font-size:12px;line-height:18px;color:#C62828}
+.cb{display:flex;align-items:center;gap:10px;min-height:44px}
+.cb input{width:18px;height:18px;margin:0;accent-color:#1976D2;cursor:pointer}
+.cb label{font-size:14px;cursor:pointer}
+.tbtn{font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:#1976D2;background:transparent;border:0;border-radius:4px;min-height:36px;padding:0 16px;cursor:pointer;transition:background 150ms cubic-bezier(.4,0,.2,1)}
+.tbtn:hover{background:rgba(25,118,210,.06)}
+.tbtn.red{color:#C62828}.tbtn.red:hover{background:rgba(198,40,40,.06)}
+.tbtn:disabled{color:#9E9E9E;cursor:default;background:transparent}
+.actions{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px}
+.right{flex-grow:1;min-width:0;display:flex;flex-direction:column}
+.tabbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px 0 12px;border-bottom:1px solid #E0E0E0}
+.tab{font-family:inherit;font-size:13px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:#424242;background:transparent;border:0;border-bottom:2px solid transparent;min-height:44px;padding:0 16px;cursor:pointer}
+.tab:hover{background:rgba(25,118,210,.04)}
+.tab[aria-selected="true"]{color:#1976D2;border-bottom-color:#1976D2}
+.sendtest{font-family:inherit;font-size:12px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:#fff;background:#1976D2;border:0;border-radius:4px;min-height:32px;padding:0 14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sendtest:disabled{background:#90CAF9;cursor:default}
+.banner{display:flex;align-items:center;gap:12px;background:#E65100;color:#fff;font-size:13px;padding:10px 16px;margin:0 16px}
+.preview{flex-grow:1;overflow-y:auto;background:#F3F6F7;margin:0 16px 16px;display:flex;flex-direction:column;align-items:center;padding:20px 0 32px}
+.inbox{width:560px;background:#fff;border:1px solid #D6DCDF;border-radius:4px;padding:12px 16px;display:grid;grid-template-columns:64px minmax(0,1fr);row-gap:6px;font-size:13px;line-height:19px;margin-bottom:16px}
+.k{color:#666}
+.email{width:560px;background:#fff;font-size:14px;line-height:22px;color:#333}
+.email .body{padding:20px 24px;display:flex;flex-direction:column;gap:12px}
+.cta{align-self:center;background:#E8650F;color:#fff;font-size:18px;font-weight:500;border-radius:24px;padding:10px 40px}
+.tags{flex-grow:1;overflow-y:auto;margin:0 16px 16px;padding:20px 8px}
+.tags .grid{display:grid;grid-template-columns:220px minmax(0,1fr);font-size:13px;line-height:20px;border-top:1px solid #E0E0E0}
+.tags .grid>*{padding:10px 8px;border-bottom:1px solid #E0E0E0}
+.tags code{font-family:'Roboto Mono',monospace;font-size:12px;color:#1147A1}
+.closed{min-height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
+.card{width:560px;max-width:100%;background:#fff;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.16);padding:24px 28px;display:flex;flex-direction:column;gap:14px}
+.chip{font-size:12px;color:#1147A1;background:#EEF5FC;border-radius:16px;padding:3px 10px}
+.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:#323232;color:#fff;font-size:14px;padding:12px 20px 12px 16px;border-left:4px solid #43A047;border-radius:4px;box-shadow:0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.14)}
+@media (max-width:1000px){.modal{flex-direction:column;height:auto}.form{width:100%;border-right:0;border-bottom:1px solid #E0E0E0}.inbox,.email{width:100%}.preview{padding:16px}}
+</style>
+</head>
+<body>
+
+<div class="closed" id="closedView" hidden>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:18px;letter-spacing:.3px;text-transform:uppercase">Reminder</span>
+      <span class="chip" id="sourceChip"></span>
+    </div>
+    <div style="display:grid;grid-template-columns:96px minmax(0,1fr);row-gap:8px;column-gap:16px;font-size:13px;line-height:20px">
+      <span class="k">Type</span><span>Email</span>
+      <span class="k">Sends</span><span id="sendsVal"></span>
+      <span class="k">Subject</span><span id="closedSubject"></span>
+    </div>
+    <div style="display:flex;justify-content:flex-end"><button type="button" class="tbtn" id="reopen">Edit</button></div>
+  </div>
+</div>
+
+<div class="modal" id="openView" role="dialog" aria-label="Edit Reminder">
+  <div class="form">
+    <span style="font-size:15px">Edit Reminder</span>
+    <div class="f ro"><span class="lbl">Reminder type</span><span class="val">Email</span></div>
+    <div class="f"><span class="lbl">Sailthru Template</span>
+      <div class="val" style="display:flex;justify-content:space-between;align-items:center">Prime Transactional Reminder - Virtual Live<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z" fill="#757575"/></svg></div>
+    </div>
+    <div class="row2">
+      <div class="f"><span class="lbl">Send On</span><span class="val">11/12/2026</span></div>
+      <div class="f"><span class="lbl">Send At</span><span class="val">02:00 PM</span></div>
+    </div>
+    <div class="col">
+      <label for="tz" class="lbl">Time zone</label>
+      <input id="tz" type="range" min="0" max="3" step="1" style="width:100%;margin:6px 0 0;accent-color:#1976D2;cursor:pointer">
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));font-size:12px;color:#424242">
+        <span>PT</span><span style="text-align:center">MT</span><span style="text-align:center">CT</span><span style="text-align:right">ET</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="cb"><input type="checkbox" id="cs"><label for="cs">Custom subject</label></div>
+      <div class="col">
+        <label for="subj" class="lbl" id="subjLbl">Subject line</label>
+        <input class="fld" id="subj" type="text" placeholder="Enter a custom subject" aria-describedby="subjHint subjErr">
+        <span class="errmsg" id="subjErr" hidden>Enter a subject, or uncheck Custom subject to use the default.</span>
+        <span class="hint" id="subjHint"></span>
+      </div>
+    </div>
+
+    <div class="col" style="gap:6px"><label for="m1" class="lbl">Custom Message one (HTML)</label><textarea class="fld" id="m1" rows="2"></textarea></div>
+    <div class="col" style="gap:6px"><label for="m2" class="lbl">Custom Message two (HTML)</label><textarea class="fld" id="m2" rows="2"></textarea></div>
+    <div class="row2">
+      <div class="f"><span class="lbl">Button label</span><span class="val">{{button_label}}</span></div>
+      <div class="f"><span class="lbl">Button URL</span><span class="val">{{button_url}}</span></div>
+    </div>
+    <div class="actions">
+      <button type="button" class="tbtn red" id="cancel">Cancel</button>
+      <button type="button" class="tbtn" id="save">Save</button>
+      <button type="button" class="tbtn" id="saveClose">Save and close</button>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="tabbar">
+      <div role="tablist" style="display:flex">
+        <button type="button" role="tab" class="tab" id="tabPreview" aria-selected="true">Preview</button>
+        <button type="button" role="tab" class="tab" id="tabTags" aria-selected="false">Template tags</button>
+      </div>
+      <button type="button" class="sendtest" id="sendTest">Send test</button>
+    </div>
+    <div class="banner" id="banner" role="status" hidden>
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2zm0-4h-2V7h2z" fill="#fff"/></svg>
+      Changes detected, please save to refresh the preview.
+    </div>
+    <div class="preview" id="previewPane">
+      <div class="inbox"><span class="k">From</span><span>PRIME Education</span><span class="k">Subject</span><span style="font-weight:500" id="previewSubject"></span></div>
+      <div class="email">
+        <div style="text-align:center;padding:22px 0 14px;background:#F3F6F7;font-size:30px;letter-spacing:1px"><span style="color:#1F3A5F">PRIME</span><span style="color:#00ADEE;font-weight:700"> LIVE</span></div>
+        <div class="body">
+          <div style="text-align:center;font-size:22px;letter-spacing:.5px;color:#1F3A5F">VIRTUAL EVENT</div>
+          <span>Join our expert faculty for this CME/CE Live Webinar!<br><a href="#" class="title-link"></a></span>
+          <span>Thursday, November 19, 2026 at 2:00 PM, Eastern Time / 11:00 AM, Pacific Time</span>
+          <span>Add to Calendar</span>
+          <span style="text-align:center"><a href="#">Outlook</a> | <a href="#">Google</a> | <a href="#">iCal</a></span>
+          <span>Access now:</span>
+          <span class="cta">Start Live Webinar</span>
+          <span>If you have any problem participating in the Live Webinar, please contact support@primeinc.org. Support will be available during the entire Live Webinar and for 30 minutes after the event.</span>
+        </div>
+        <div style="background:#1F3A5F;color:#fff;padding:10px 16px;font-size:15px;letter-spacing:1px">PRIME EDUCATION</div>
+      </div>
+    </div>
+    <div class="tags" id="tagsPane" hidden>
+      <div class="grid" id="tagsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  var TITLE = 'The Paradigm Shift in Neuro-Oncology: Precision Decision-Making for IDH1/2 Mutated Gliomas';
+  var DEF = "EVENT REMINDER: Don't forget to join us Next Week for {{ title }} for which you are already registered";
+  var TZ = ['PT', 'MT', 'CT', 'ET'];
+  var TAGS = [
+    ['{{ title }}', TITLE],
+    ['{{ button_label }}', 'Start Live Webinar'],
+    ['{{ button_url }}', 'Activity launch link'],
+    ['{{ event_date }}', 'Thursday, November 19, 2026']
+  ];
+
+  var saved = { on: false, custom: '', tz: 3 };
+  var draft = Object.assign({}, saved);
+  var toastTimer;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = {
+    cs: $('cs'), subj: $('subj'), subjLbl: $('subjLbl'), subjErr: $('subjErr'), subjHint: $('subjHint'),
+    tz: $('tz'), save: $('save'), saveClose: $('saveClose'), cancel: $('cancel'),
+    banner: $('banner'), sendTest: $('sendTest'), previewSubject: $('previewSubject'),
+    tabPreview: $('tabPreview'), tabTags: $('tabTags'), previewPane: $('previewPane'), tagsPane: $('tagsPane'),
+    openView: $('openView'), closedView: $('closedView'), toast: $('toast')
+  };
+
+  var resolve = function (s) { return s.split('{{ title }}').join(TITLE).split('{{title}}').join(TITLE); };
+  var effective = function (s) { return s.on ? s.custom : DEF; };
+
+  // tags table + title link
+  TAGS.forEach(function (t) {
+    var c = document.createElement('code'); c.textContent = t[0];
+    var v = document.createElement('span'); v.textContent = t[1];
+    $('tagsGrid').append(c, v);
+  });
+  document.querySelectorAll('.title-link').forEach(function (a) { a.textContent = TITLE; });
+
+  function render() {
+    var dirty = draft.on !== saved.on || draft.custom !== saved.custom || draft.tz !== saved.tz;
+    var err = draft.on && draft.custom.trim() === '';
+
+    el.cs.checked = draft.on;
+    el.tz.value = draft.tz;
+    if (el.subj.value !== draft.custom) el.subj.value = draft.custom;
+    el.subj.disabled = !draft.on;
+    el.subj.classList.toggle('err', err);
+    el.subjErr.hidden = !err;
+    el.subjLbl.style.color = err ? '#C62828' : (draft.on ? '#666' : '#757575');
+    el.subjHint.textContent = (draft.on ? 'Default subject: ' : 'Using default subject: ') + DEF;
+    el.subjHint.style.color = draft.on ? '#666' : '#424242';
+
+    el.save.disabled = !dirty || err;
+    el.saveClose.disabled = err;
+    el.banner.hidden = !dirty;
+    el.sendTest.disabled = dirty;
+
+    var subject = resolve(effective(saved));
+    el.previewSubject.textContent = subject;
+    $('closedSubject').textContent = subject;
+    $('sendsVal').textContent = '11/12/2026 at 02:00 PM ' + TZ[saved.tz];
+    $('sourceChip').textContent = saved.on ? 'Custom subject' : 'Template default subject';
+  }
+
+  function flash(msg) {
+    clearTimeout(toastTimer);
+    el.toast.textContent = msg; el.toast.hidden = false;
+    toastTimer = setTimeout(function () { el.toast.hidden = true; }, 4000);
+  }
+
+  function setOpen(open) { el.openView.hidden = !open; el.closedView.hidden = open; }
+
+  function commit(close) {
+    if (draft.on && draft.custom.trim() === '') return;
+    saved = Object.assign({}, draft);
+    render();
+    if (close) setOpen(false);
+    flash(close ? 'Reminder saved' : 'Reminder saved — preview refreshed');
+  }
+
+  function setTab(tags) {
+    el.tabPreview.setAttribute('aria-selected', String(!tags));
+    el.tabTags.setAttribute('aria-selected', String(tags));
+    el.previewPane.hidden = tags;
+    el.tagsPane.hidden = !tags;
+  }
+
+  el.cs.addEventListener('change', function () { draft.on = el.cs.checked; render(); });
+  el.subj.addEventListener('input', function () { draft.custom = el.subj.value; render(); });
+  el.tz.addEventListener('input', function () { draft.tz = Number(el.tz.value); render(); });
+  el.save.addEventListener('click', function () { commit(false); });
+  el.saveClose.addEventListener('click', function () { commit(true); });
+  el.cancel.addEventListener('click', function () { draft = Object.assign({}, saved); render(); setOpen(false); });
+  $('reopen').addEventListener('click', function () { setOpen(true); });
+  el.tabPreview.addEventListener('click', function () { setTab(false); });
+  el.tabTags.addEventListener('click', function () { setTab(true); });
+  el.sendTest.addEventListener('click', function () { flash('Test email sent (prototype — nothing was sent)'); });
+
+  render();
+})();
+</script>
+</body>
+</html>
