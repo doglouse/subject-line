@@ -170,6 +170,7 @@ textarea.fld{resize:vertical}
   var saved = { on: false, custom: '', tz: 3 };
   var draft = Object.assign({}, saved);
   var toastTimer;
+  var showErr = false; // only true after a save attempt with an empty custom subject
 
   var $ = function (id) { return document.getElementById(id); };
   var el = {
@@ -193,7 +194,7 @@ textarea.fld{resize:vertical}
 
   function render() {
     var dirty = draft.on !== saved.on || draft.custom !== saved.custom || draft.tz !== saved.tz;
-    var err = draft.on && draft.custom.trim() === '';
+    var err = showErr && draft.on && draft.custom.trim() === '';
 
     el.cs.checked = draft.on;
     el.tz.value = draft.tz;
@@ -205,8 +206,7 @@ textarea.fld{resize:vertical}
     el.subjHint.textContent = (draft.on ? 'Default subject: ' : 'Using default subject: ') + DEF;
     el.subjHint.style.color = draft.on ? '#666' : '#424242';
 
-    el.save.disabled = !dirty || err;
-    el.saveClose.disabled = err;
+    el.save.disabled = !dirty;
     el.banner.hidden = !dirty;
     el.sendTest.disabled = dirty;
 
@@ -226,7 +226,8 @@ textarea.fld{resize:vertical}
   function setOpen(open) { el.openView.hidden = !open; el.closedView.hidden = open; }
 
   function commit(close) {
-    if (draft.on && draft.custom.trim() === '') return;
+    if (draft.on && draft.custom.trim() === '') { showErr = true; render(); el.subj.focus(); return; }
+    showErr = false;
     saved = Object.assign({}, draft);
     render();
     if (close) setOpen(false);
@@ -240,12 +241,12 @@ textarea.fld{resize:vertical}
     el.tagsPane.hidden = !tags;
   }
 
-  el.cs.addEventListener('change', function () { draft.on = el.cs.checked; render(); });
+  el.cs.addEventListener('change', function () { draft.on = el.cs.checked; showErr = false; render(); });
   el.subj.addEventListener('input', function () { draft.custom = el.subj.value; render(); });
   el.tz.addEventListener('input', function () { draft.tz = Number(el.tz.value); render(); });
   el.save.addEventListener('click', function () { commit(false); });
   el.saveClose.addEventListener('click', function () { commit(true); });
-  el.cancel.addEventListener('click', function () { draft = Object.assign({}, saved); render(); setOpen(false); });
+  el.cancel.addEventListener('click', function () { draft = Object.assign({}, saved); showErr = false; render(); setOpen(false); });
   $('reopen').addEventListener('click', function () { setOpen(true); });
   el.tabPreview.addEventListener('click', function () { setTab(false); });
   el.tabTags.addEventListener('click', function () { setTab(true); });
