@@ -131,7 +131,6 @@ textarea.fld{resize:vertical}
       Changes detected, please save to refresh the preview.
     </div>
     <div class="preview" id="previewPane">
-      <div class="inbox"><span class="k">From</span><span>PRIME Education</span><span class="k">Subject</span><span style="font-weight:500" id="previewSubject"></span></div>
       <div class="email">
         <div style="text-align:center;padding:22px 0 14px;background:#F3F6F7;font-size:30px;letter-spacing:1px"><span style="color:#1F3A5F">PRIME</span><span style="color:#00ADEE;font-weight:700"> LIVE</span></div>
         <div class="body">
@@ -176,7 +175,7 @@ textarea.fld{resize:vertical}
   var el = {
     cs: $('cs'), subj: $('subj'), subjLbl: $('subjLbl'), subjErr: $('subjErr'), subjHint: $('subjHint'),
     tz: $('tz'), save: $('save'), saveClose: $('saveClose'), cancel: $('cancel'),
-    banner: $('banner'), sendTest: $('sendTest'), previewSubject: $('previewSubject'),
+    banner: $('banner'), sendTest: $('sendTest'),
     tabPreview: $('tabPreview'), tabTags: $('tabTags'), previewPane: $('previewPane'), tagsPane: $('tagsPane'),
     openView: $('openView'), closedView: $('closedView'), toast: $('toast')
   };
@@ -211,7 +210,6 @@ textarea.fld{resize:vertical}
     el.sendTest.disabled = dirty;
 
     var subject = resolve(effective(saved));
-    el.previewSubject.textContent = subject;
     $('closedSubject').textContent = subject;
     $('sendsVal').textContent = '11/12/2026 at 02:00 PM ' + TZ[saved.tz];
     $('sourceChip').textContent = saved.on ? 'Custom subject' : 'Template default subject';
